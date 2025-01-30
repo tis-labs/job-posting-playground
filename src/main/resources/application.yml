@@ -1,3 +1,24 @@
 spring:
-  application:
-    name: playground
+  datasource:
+    url: jdbc:mysql://localhost:3306/playground
+#    username: 작성하기
+#    password: 작성하기
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL 드라이버 클래스
+  jpa:
+    hibernate:
+      ddl-auto: update # Hibernate DDL 동작
+    database-platform: org.hibernate.dialect.MySQLDialect # Hibernate MySQL Dialect
+  sql:
+    init:
+      mode: always # 항상 초기화 (data.sql 실행)
+  data:
+    platform: mysql
+
+logging:
+  level:
+    org.hibernate.SQL: debug # SQL 쿼리 출력
+    org.hibernate.type.descriptor.sql.BasicBinder: trace # 바인딩된 SQL 파라미터 출력
+    org.hibernate.stat: debug # Hibernate 통계 정보 로그
+
+server:
+  port: 8080
