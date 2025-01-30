@@ -37,7 +37,7 @@ body {
     font-weight: 400;
 }
 
-.board {
+.job-layout {
     position: relative;
     margin: 10px;
     width: calc(100vw - 20px);
