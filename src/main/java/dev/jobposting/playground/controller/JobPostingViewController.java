@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequiredArgsConstructor
-public class JobPostingController {
+public class JobPostingViewController {
     private final JobPostingService jobPostingService;
 
     @GetMapping("/")
