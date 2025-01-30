@@ -1,27 +1,15 @@
 package dev.jobposting.playground.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor
+@Builder
 public class JobPosting {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String title;
-    private String company;
-    private String location;
-    private String description;
-    private int clickCount;
-
-    public void incrementClickCount() {
-        this.clickCount++;
-    }
+    private final Long id;
+    private final String title;
+    private final String company;
+    private final String location;
+    private final String description;
+    private final int clickCount;
 }
