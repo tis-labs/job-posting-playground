@@ -6,21 +6,21 @@ import java.util.List;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import dev.jobposting.playground.domain.JobPosting;
+import dev.jobposting.playground.controller.JobPostingResponse;
 
 @Primary
 @Service
 public class MockJobPostingService implements JobPostingService {
 
 	@Override
-	public List<JobPosting> findTopViewedJobs() {
-		List<JobPosting> postings = Arrays.asList(
-			new JobPosting(500, "ABC 회사 백엔드 채용공고", "경력 3년차", "ABC", "default-url"),
-			new JobPosting(300, "XYZ 회사 백엔드 채용공고", "경력 1년차", "XYZ", "default-url"),
-			new JobPosting(200, "DEF 회사 백엔드 채용공고", "경력 1년차", "DEF", "default-url"),
-			new JobPosting(150, "TT 회사 백엔드 채용공고", "경력 1년차", "TT", "default-url"),
-			new JobPosting(150, "WW 회사 백엔드 채용공고", "경력 1년차", "WW", "default-url"),
-			new JobPosting(100, "KK 회사 백엔드 채용공고", "경력 1년차", "KK", "default-url")
+	public List<JobPostingResponse> findTopViewedJobs() {
+		List<JobPostingResponse> postings = Arrays.asList(
+			new JobPostingResponse(1L, 500, "ABC 회사 백엔드 채용공고", "경력 3년차", "ABC", "default-url"),
+			new JobPostingResponse(2L, 300, "XYZ 회사 백엔드 채용공고", "경력 1년차", "XYZ", "default-url"),
+			new JobPostingResponse(3L, 200, "DEF 회사 백엔드 채용공고", "경력 1년차", "DEF", "default-url"),
+			new JobPostingResponse(4L, 150, "TT 회사 백엔드 채용공고", "경력 1년차", "TT", "default-url"),
+			new JobPostingResponse(5L, 150, "WW 회사 백엔드 채용공고", "경력 1년차", "WW", "default-url"),
+			new JobPostingResponse(6L, 100, "KK 회사 백엔드 채용공고", "경력 1년차", "KK", "default-url")
 		);
 		return postings;
 	}
