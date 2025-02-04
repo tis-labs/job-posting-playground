@@ -12,11 +12,10 @@ export function calculateSize(views) {
     return views >= sizes.length ? sizes[sizes.length - 1] : sizes[views];
 }
 
-// 모든 job-card 요소의 크기 조정 (조회수 기반)
+// 모든 job-card 요소의 크기 즉시 조정 (조회수 기반)
 export function applyLayout(cards, container) {
     cards.forEach(card => {
         const views = parseInt(card.getAttribute('data-views'), 10) || 0;
-
         const { width, height } = calculateSize(views);
 
         card.style.width = `${width}px`;

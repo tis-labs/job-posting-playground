@@ -1,18 +1,28 @@
-import { applyLayout } from "./layout.js";
-
-// 특정 Job ID의 클릭 수(조회수)를 증가시키는 함수 (서버 요청 없이 클라이언트에서 처리)
-export function increaseClickCount(jobId, cards) {
+export async function increaseClickCount(jobId) {
     const card = document.querySelector(`.job-card[data-id="${jobId}"]`);
 
-    if (card) {
-        let currentViews = parseInt(card.getAttribute('data-views'), 10) || 0;
-        let updatedViews = currentViews + 1;
+    if (!card) {
+        console.error(`해당 Job ID에 대한 카드 요소를 찾을 수 없습니다.`);
+        return;
+    }
 
-        card.setAttribute('data-views', updatedViews);
-        card.querySelector('.view-count').textContent = `조회수: ${updatedViews}`;
+    let currentViews = parseInt(card.getAttribute('data-views'), 10) || 0;
+    let updatedViews = currentViews + 1;
 
-        applyLayout(cards, document.querySelector('.grid-container'));
-    } else {
-        console.error(`해당 Job ID(${jobId})에 대한 카드 요소를 찾을 수 없습니다.`);
+    // 조회수 UI 즉시 업데이트
+    card.setAttribute('data-views', updatedViews);
+    card.querySelector('.view-count').textContent = `조회수: ${updatedViews}`;
+
+    // 서버에 조회수 증가 요청
+    try {
+        await fetch("/api/job-postings/click", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `jobId=${jobId}`
+        });
+    } catch (error) {
+        console.error("조회수 증가 요청 실패:", error);
     }
 }
