@@ -13,20 +13,24 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class JobPostingService {
-    private static final Map<Long, Integer> clickCounts = new HashMap<>(); // 조회수 저장소
 
+    private static final Map<Long, Integer> clickCounts = new HashMap<>();
+
+    /**
+     * 데이터 생성 (초기 조회수 0)
+     */
     static {
         for (long i = 1; i <= 6; i++) {
-            clickCounts.put(i, 0); // 처음에는 조회수 0으로 세팅
+            clickCounts.put(i, 0);
         }
     }
 
+    /**
+     * 전체 JobPosting 목록 조회
+     */
     public List<JobPosting> getAllJobPostings() {
         return clickCounts.entrySet().stream()
-                .map(entry -> JobPosting.builder()
-                        .id(entry.getKey())
-                        .clickCount(entry.getValue())
-                        .build())
+                .map(entry -> createJobPosting(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 

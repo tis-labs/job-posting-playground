@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class JobPosting {
-    private final Long id;
-    private final int clickCount;
+    private Long id;
+    private int clickCount;
+    private int width;
+    private int height;
 }
