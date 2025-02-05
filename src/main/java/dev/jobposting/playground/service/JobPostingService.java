@@ -1,6 +1,7 @@
 package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.domain.JobPosting;
+import dev.jobposting.playground.domain.PaperSize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,26 @@ public class JobPostingService {
                         .clickCount(entry.getValue())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 특정 JobPosting 생성 (조회수 기반 크기 결정)
+     */
+    private JobPosting createJobPosting(Long jobId, int clickCount) {
+        PaperSize paperSize = calculateSize(clickCount);
+        return JobPosting.builder()
+                .id(jobId)
+                .clickCount(clickCount)
+                .width(paperSize.getWidth())
+                .height(paperSize.getHeight())
+                .build();
+    }
+
+    /**
+     * 조회수를 기반으로 크기 반환
+     */
+    private PaperSize calculateSize(int clickCount) {
+        return PaperSize.getSizeByViews(clickCount);
     }
 
     public void increaseClickCount(Long jobId) {
