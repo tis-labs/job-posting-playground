@@ -1,13 +1,12 @@
 import { PaperSize } from './card/PaperSize.js';
-import { JobPostingLayoutManager } from "./layout/JobPostingLayOut.js";
+import { JobLayoutManager } from "./layout/JobLayOut.js";
 
-const jobPostingLayout = new JobPostingLayoutManager(
+const jobLayoutManager = new JobLayoutManager(
     document.querySelector('.job-layout'),
     PaperSize.UNIT_HEIGHT,
     PaperSize.UNIT_WIDTH
 );
 
-// UserAgent로 체크
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
@@ -15,14 +14,15 @@ function isMobile() {
 function loadJobPostings() {
     fetch('/api/v1/jobs')
         .then(response => response.json())
-        .then(postings => {
-            postings.forEach(posting => {
+        .then(cards => {
+            cards.forEach(posting => {
+                /*임시 페이퍼 크기 지정 부분 */
                 let paperSize = PaperSize.random();
                 posting.width = paperSize.width;
                 posting.height = paperSize.height;
             })
-            window.currentJobPostings = postings;
-            jobPostingLayout.updatePostingLayout(postings);
+            window.currentJobPostings = cards;
+            jobLayoutManager.updateLayout(cards);
         })
         .catch(error => console.error('채용공고 로딩 실패:', error));
 }
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.addEventListener('resize', function () {
-    jobPostingLayout.width = window.innerWidth;
-    jobPostingLayout.height = window.innerHeight;
-    jobPostingLayout.updatePostingLayout(window.currentJobPostings);
+    jobLayoutManager.width = window.innerWidth;
+    jobLayoutManager.height = window.innerHeight;
+    jobLayoutManager.updateLayout(window.currentJobPostings);
 })

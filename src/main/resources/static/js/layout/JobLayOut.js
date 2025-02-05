@@ -1,4 +1,4 @@
-export class JobPostingLayoutManager {
+export class JobLayoutManager {
     constructor(containerElement, unitHeight, unitWidth) {
         this.containerElement = containerElement;
         this.width = window.innerWidth;
@@ -14,13 +14,13 @@ export class JobPostingLayoutManager {
         this.containerElement.style.height = `${this.height}px`;
     }
 
-    calculatePostingPosition(posting, occupiedSpaces, convertedTotalHeight, convertedTotalWidth) {
+    calculateJobCardPosition(posting, occupied, convertedTotalHeight, convertedTotalWidth) {
         let convertedPostHeight = Math.ceil((posting.height - 1) / this.unitHeight);
         let convertedPostWidth = Math.ceil((posting.width - 1) / this.unitWidth);
         for (let y = 0; y <= convertedTotalHeight - convertedPostHeight; y++) {
             for (let x = 0; x <= convertedTotalWidth - convertedPostHeight; x++) {
-                if (this.canPlacePosting(x, y, convertedPostWidth, convertedPostHeight, occupiedSpaces)) {
-                    this.markOccupied(x, y, convertedPostWidth, convertedPostHeight, occupiedSpaces);
+                if (this.canPlaceJobCard(x, y, convertedPostWidth, convertedPostHeight, occupied)) {
+                    this.markOccupied(x, y, convertedPostWidth, convertedPostHeight, occupied);
                     return { x, y };
                 }
             }
@@ -28,45 +28,45 @@ export class JobPostingLayoutManager {
         return null;
     }
 
-    canPlacePosting(x, y, width, height, occupiedSpaces) {
+    canPlaceJobCard(x, y, width, height, occupied) {
         for (let i = y; i < y + height; i++) {
             for (let j = x; j < x + width; j++) {
-                if (occupiedSpaces[i][j]) return false;
+                if (occupied[i][j]) return false;
             }
         }
         return true;
     }
 
-    markOccupied(x, y, width, height, occupiedSpaces) {
+    markOccupied(x, y, width, height, occupied) {
         for (let i = y; i < y + height; i++) {
             for (let j = x; j < x + width; j++) {
-                occupiedSpaces[i][j] = true;
+                occupied[i][j] = true;
             }
         }
     }
 
-    updatePostingLayout(postings) {
+    updateLayout(postings) {
         this.containerElement.innerHTML = '';
         let convertedTotalHeight = Math.floor(this.height / this.unitHeight);
         let convertedTotalWidth = Math.floor(this.width / this.unitWidth);
         const occupiedSpaces = Array.from(Array(convertedTotalHeight), () => Array(convertedTotalWidth).fill(false));
         postings.forEach(posting => {
-            const position = this.calculatePostingPosition(posting, occupiedSpaces, convertedTotalHeight, convertedTotalWidth);
+            const position = this.calculateJobCardPosition(posting, occupiedSpaces, convertedTotalHeight, convertedTotalWidth);
             if (position) {
-                const postingElement = this.createPostingElement(posting, position);
+                const postingElement = this.createCardElement(posting, position);
                 this.containerElement.appendChild(postingElement);
             }
         });
     }
 
-    createPostingElement(posting, position) {
-        const postingCard = document.createElement('div');
-        postingCard.className = 'job-card';
-        postingCard.style.width = `${posting.width}px`;
-        postingCard.style.height = `${posting.height}px`;
-        postingCard.style.left = `${position.x * this.unitWidth}px`;
-        postingCard.style.top = `${position.y * this.unitHeight}px`;
-        postingCard.innerHTML = `
+    createCardElement(posting, position) {
+        const jobCard = document.createElement('div');
+        jobCard.className = 'job-card';
+        jobCard.style.width = `${posting.width}px`;
+        jobCard.style.height = `${posting.height}px`;
+        jobCard.style.left = `${position.x * this.unitWidth}px`;
+        jobCard.style.top = `${position.y * this.unitHeight}px`;
+        jobCard.innerHTML = `
             <div class="card-content">
                 <div class="header-row">
                     <div class="job-title">${posting.title}</div>
@@ -78,7 +78,7 @@ export class JobPostingLayoutManager {
             </div>
         `;
 
-        return postingCard;
+        return jobCard;
     }
 
     resize() {
