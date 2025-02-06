@@ -1,5 +1,6 @@
 package dev.jobposting.playground.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.jobposting.playground.service.JobPostingService;
 
+import dev.jobposting.playground.ui2.PaperSize;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -18,8 +20,12 @@ public class JobPostingApiController {
 	private final JobPostingService jobPostingService;
 
 	@GetMapping
-	public ResponseEntity<List<JobPostingResponse>> getTopViewedJobs() {
-		List<JobPostingResponse> response = jobPostingService.findTopViewedJobs();
-		return ResponseEntity.ok(response);
+	public ResponseEntity<List<JobCardResponse>> getTopViewedJobs() {
+		List<JobPostingResponse> jobPostingsResponses = jobPostingService.findTopViewedJobs();
+		List<JobCardResponse> jobCardsResponse = new ArrayList<>();
+		for (JobPostingResponse jobPostingResponse : jobPostingsResponses) {
+			jobCardsResponse.add(JobCardResponse.from(jobPostingResponse, PaperSize.random()));
+		}
+		return ResponseEntity.ok(jobCardsResponse);
 	}
 }

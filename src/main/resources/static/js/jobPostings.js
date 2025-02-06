@@ -15,13 +15,7 @@ function loadJobPostings() {
     fetch('/api/v1/jobs')
         .then(response => response.json())
         .then(cards => {
-            cards.forEach(posting => {
-                /*임시 페이퍼 크기 지정 부분 */
-                let paperSize = PaperSize.random();
-                posting.width = paperSize.width;
-                posting.height = paperSize.height;
-            })
-            window.currentJobPostings = cards;
+            window.currentJobCards = cards;
             jobLayoutManager.updateLayout(cards);
         })
         .catch(error => console.error('채용공고 로딩 실패:', error));
@@ -43,5 +37,5 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('resize', function () {
     jobLayoutManager.width = window.innerWidth;
     jobLayoutManager.height = window.innerHeight;
-    jobLayoutManager.updateLayout(window.currentJobPostings);
+    jobLayoutManager.updateLayout(window.currentJobCards);
 })
