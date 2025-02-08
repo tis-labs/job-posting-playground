@@ -1,6 +1,6 @@
 package dev.jobposting.playground.controller;
 
-import dev.jobposting.playground.service.JobPostingService;
+import dev.jobposting.playground.service.JobPostingInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class JobPostingController {
 
-    private final JobPostingService jobPostingService;
+    private final JobPostingInfoService jobPostingInfoService;
 
     @GetMapping
     public String showJobPostings(Model model) {
-        model.addAttribute("jobPostings", jobPostingService.getAllJobPostings());
+        model.addAttribute("jobPostings", jobPostingInfoService.getAllJobPostings());
         return "index";
     }
 
     @PostMapping("/job/{id}/click")
     public ResponseEntity<Void> increaseClickCount(@PathVariable("id") Long jobId) {
-        jobPostingService.increaseClickCount(jobId);
+        jobPostingInfoService.increaseClickCount(jobId);
         return ResponseEntity.ok().build();
     }
 }

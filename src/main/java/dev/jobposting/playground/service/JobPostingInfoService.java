@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class JobPostingService {
+public class JobPostingInfoService {
 
     private static final Map<Long, Integer> clickCounts = new HashMap<>();
 
