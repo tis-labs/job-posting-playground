@@ -19,9 +19,6 @@ public enum PaperSize {
         this.height = height;
     }
 
-    /**
-     * 조회수에 따라 적절한 크기 반환
-     */
     public static PaperSize getSizeByViews(int totalViewCount) {
         if (totalViewCount >= 5) return A2;
         if (totalViewCount >= 4) return A3;

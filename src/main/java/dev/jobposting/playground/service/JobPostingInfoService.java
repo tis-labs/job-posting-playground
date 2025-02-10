@@ -25,18 +25,12 @@ public class JobPostingInfoService {
         }
     }
 
-    /**
-     * 전체 JobPosting 목록 조회
-     */
     public List<JobPosting> getAllJobPostings() {
         return clickCounts.entrySet().stream()
                 .map(entry -> createJobPosting(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 특정 JobPosting 생성 (조회수 기반 크기 결정)
-     */
     private JobPosting createJobPosting(Long jobId, int clickCount) {
         PaperSize paperSize = calculateSize(clickCount);
         return JobPosting.builder()
@@ -47,14 +41,13 @@ public class JobPostingInfoService {
                 .build();
     }
 
-    /**
-     * 조회수를 기반으로 크기 반환
-     */
     private PaperSize calculateSize(int clickCount) {
         return PaperSize.getSizeByViews(clickCount);
     }
 
-    public void increaseClickCount(Long jobId) {
-        clickCounts.put(jobId, clickCounts.getOrDefault(jobId, 0) + 1);
+    public int increaseViewCount(Long jobId) {
+        int updatedCount = clickCounts.getOrDefault(jobId, 0) + 1;
+        clickCounts.put(jobId, updatedCount);
+        return updatedCount;
     }
 }

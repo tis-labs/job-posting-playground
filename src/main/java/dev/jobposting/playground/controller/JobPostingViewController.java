@@ -1,4 +1,4 @@
-package dev.jobposting.playground.view;
+package dev.jobposting.playground.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
