@@ -97,27 +97,51 @@ export class JobLayoutManager {
             return;
         }
 
-        this.containerElement.innerHTML = '';  // 기존 공고 카드 초기화
+        this.containerElement.innerHTML = ''; // 기존 요소 초기화
 
-        let totalCards = postings.length;
-        let maxRows = Math.ceil(totalCards / 4);
-        let cardHeight = 200;
-        let layoutHeight = maxRows * (cardHeight + 10);
+        let currentX = 0; // 현재 X 좌표
+        let currentY = 0; // 현재 Y 좌표
+        let rowHeight = 0; // 현재 줄에서 가장 높은 카드의 높이 저장
+        let maxY = 0; // 최종적으로 사용된 y 좌표 중 가장 큰 값
 
-        this.containerElement.style.height = `${layoutHeight}px`;
+        // 크기가 큰 순서대로 정렬 후 배치 (왼쪽 우선)
+        postings.sort((a, b) => b.height - a.height || b.width - a.width);
 
-        postings.forEach(posting => {
+        postings.forEach((posting, index) => {
             console.log(`[updateLayout] 공고 ID: ${posting.id}, Width: ${posting.width}, Height: ${posting.height}`);
+
+            if (currentX + posting.width > this.containerElement.clientWidth) {
+                // 줄 바꿈
+                currentX = 0;
+                currentY += rowHeight;
+                rowHeight = 0; // 줄 시작이므로 초기화
+            }
+
+            rowHeight = Math.max(rowHeight, posting.height); // 현재 줄에서 가장 높은 공고 업데이트
+            maxY = Math.max(maxY, currentY + posting.height); // 컨테이너 높이 최적화
 
             const jobCard = this.createCardElement(posting);
             jobCard.style.width = `${posting.width}px`;
             jobCard.style.height = `${posting.height}px`;
 
+            // 부드러운 이동 애니메이션 적용
+            setTimeout(() => {
+                jobCard.style.transition = "left 0.3s ease-out, top 0.3s ease-out";
+                jobCard.style.left = `${currentX}px`;
+                jobCard.style.top = `${currentY}px`;
+            }, 50);
+
+            currentX += posting.width; // 다음 카드 위치 업데이트
             this.containerElement.appendChild(jobCard);
         });
 
+        // `.job-layout` 높이를 공고들이 차지하는 크기로 자동 조정
+        this.containerElement.style.height = `${maxY}px`;
+        console.log(`[updateLayout] 컨테이너 높이 최적화: ${maxY}px`);
+
         attachClickEventsToCards();
     }
+
 
     /**
      * 공고 카드 요소를 생성

@@ -52,35 +52,24 @@ body {
 }
 
 .job-layout {
-    position: absolute;
-    width: 1200px;
-    min-height: 700px;
-    max-height: 90vh;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-start; /*  왼쪽 정렬 유지 */
     align-items: flex-start;
-    justify-content: flex-start;
-    padding: 10px;
-    box-sizing: border-box;
+    gap: 0;
+    min-height: auto !important;
+    height: auto !important;  /*  높이 강제 조정 */
+    max-height: none !important;
+    overflow: visible !important;
 }
 
 .job-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    margin: 0 !important;  /*  카드 간격 완전히 제거 */
     padding: 15px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    transition: left 0.3s ease-out, top 0.3s ease-out; /*  이동 애니메이션 */
     cursor: pointer;
 }
 
