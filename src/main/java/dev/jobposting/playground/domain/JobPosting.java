@@ -7,7 +7,8 @@ import lombok.Getter;
 @Builder
 public class JobPosting {
     private Long id;
-    private int clickCount;
+    private int totalViewCount;
+    private int fiveMinViewCount;
     private int width;
     private int height;
 }

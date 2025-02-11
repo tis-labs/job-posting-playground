@@ -22,14 +22,14 @@ public class MockJobPostingService implements JobPostingService {
 		return jobPostingInfoService.getAllJobPostings().stream()
 				.map(job -> new JobPostingResponse(
 						job.getId(),
-						job.getClickCount(),
-						job.getClickCount(),
-						job.getClickCount(),
+						job.getFiveMinViewCount(),
+						job.getTotalViewCount(),
 						"샘플 공고 " + job.getId(),
 						"샘플 설명",
 						"샘플 회사",
 						"default-url"
 				))
-				.collect(Collectors.toList());
+				.sorted((x, y) -> Integer.compare(y.getFiveMinViewCount(), x.getFiveMinViewCount()))
+				.toList();
 	}
 }

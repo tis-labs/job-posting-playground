@@ -35,7 +35,8 @@ public class JobPostingInfoService {
         PaperSize paperSize = calculateSize(clickCount);
         return JobPosting.builder()
                 .id(jobId)
-                .clickCount(clickCount)
+                .fiveMinViewCount(clickCount)
+                .totalViewCount(clickCount)
                 .width(paperSize.getWidth())
                 .height(paperSize.getHeight())
                 .build();

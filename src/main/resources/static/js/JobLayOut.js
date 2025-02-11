@@ -1,23 +1,45 @@
+/**
+ * JobLayoutManager 클래스
+ * - 채용 공고 카드의 레이아웃을 관리하는 역할
+ * - 공고 카드의 위치를 계산하고, 화면에 렌더링하는 기능 포함
+ */
 export class JobLayoutManager {
+    /**
+     * containerElement - 공고 카드가 들어갈 컨테이너 요소
+     * unitHeight - 배치할 때의 기본 높이 단위
+     * unitWidth - 배치할 때의 기본 너비 단위
+     */
     constructor(containerElement, unitHeight, unitWidth) {
         this.containerElement = containerElement;
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        this.initializeContainer();
+        this.width = window.innerWidth;  // 현재 화면 너비
+        this.height = window.innerHeight; // 현재 화면 높이
         this.unitHeight = unitHeight;
         this.unitWidth = unitWidth;
+        this.initializeContainer();
     }
 
+    /**
+     * 컨테이너의 기본 스타일을 설정 (크기 및 위치)
+     */
     initializeContainer() {
         this.containerElement.style.position = 'relative';
         this.containerElement.style.width = `${this.width}px`;
         this.containerElement.style.height = `${this.height}px`;
     }
 
+    /**
+     * 공고 카드를 배치할 위치를 계산
+     * posting - 공고 데이터 (크기 정보 포함)
+     * occupied - 이미 차지된 공간을 나타내는 배열
+     * convertedTotalHeight - 전체 컨테이너의 높이 (배치 단위 기준)
+     * convertedTotalWidth - 전체 컨테이너의 너비 (배치 단위 기준)
+     * 배치할 위치 좌표 {x, y}, 없으면 null 반환
+     */
     calculateJobCardPosition(posting, occupied, convertedTotalHeight, convertedTotalWidth) {
         let convertedPostHeight = Math.ceil(posting.height / this.unitHeight);
         let convertedPostWidth = Math.ceil(posting.width / this.unitWidth);
 
+        // 빈 공간을 찾아 공고를 배치할 위치를 찾음
         for (let y = 0; y <= convertedTotalHeight - convertedPostHeight; y++) {
             for (let x = 0; x <= convertedTotalWidth - convertedPostWidth; x++) {
                 if (this.canPlaceJobCard(x, y, convertedPostWidth, convertedPostHeight, occupied)) {
@@ -29,6 +51,15 @@ export class JobLayoutManager {
         return null;
     }
 
+    /**
+     * 주어진 위치에 공고 카드를 배치할 수 있는지 확인
+     * x - 배치할 X 좌표
+     * y - 배치할 Y 좌표
+     * width - 공고 카드의 너비
+     * height - 공고 카드의 높이
+     * occupied - 차지된 공간을 나타내는 배열
+     * 배치 가능 여부 (true: 가능, false: 불가능)
+     */
     canPlaceJobCard(x, y, width, height, occupied) {
         for (let i = y; i < y + height; i++) {
             for (let j = x; j < x + width; j++) {
@@ -38,6 +69,14 @@ export class JobLayoutManager {
         return true;
     }
 
+    /**
+     * 특정 위치를 차지된 공간으로 표시
+     * x - 시작 X 좌표
+     * y - 시작 Y 좌표
+     * width - 공고 카드 너비
+     * height - 공고 카드 높이
+     * occupied - 차지된 공간 배열
+     */
     markOccupied(x, y, width, height, occupied) {
         for (let i = y; i < y + height; i++) {
             for (let j = x; j < x + width; j++) {
@@ -46,6 +85,10 @@ export class JobLayoutManager {
         }
     }
 
+    /**
+     * 화면에 공고 카드를 업데이트하여 렌더링
+     * postings - 서버에서 받은 공고 데이터 목록
+     */
     updateLayout(postings) {
         console.log("[updateLayout] 호출됨, 받은 데이터:", postings);
 
@@ -54,12 +97,12 @@ export class JobLayoutManager {
             return;
         }
 
-        this.containerElement.innerHTML = '';  // 기존 요소 초기화
+        this.containerElement.innerHTML = '';  // 기존 공고 카드 초기화
 
         let totalCards = postings.length;
-        let maxRows = Math.ceil(totalCards / 4); // 4열 배치 기준으로 행 수 계산
-        let cardHeight = 200; // 카드 기본 높이
-        let layoutHeight = maxRows * cardHeight + 20; // 추가 여백 포함하여 크기 계산
+        let maxRows = Math.ceil(totalCards / 4);
+        let cardHeight = 200;
+        let layoutHeight = maxRows * (cardHeight + 10);
 
         this.containerElement.style.height = `${layoutHeight}px`;
 
@@ -76,6 +119,12 @@ export class JobLayoutManager {
         attachClickEventsToCards();
     }
 
+    /**
+     * 공고 카드 요소를 생성
+     * posting - 공고 데이터
+     * position - 배치할 위치 좌표 {x, y}
+     * {HTMLElement} 생성된 공고 카드 요소
+     */
     createCardElement(posting, position) {
         const jobCard = document.createElement('div');
         jobCard.className = 'job-card';
@@ -110,6 +159,9 @@ export class JobLayoutManager {
         return jobCard;
     }
 
+    /**
+     * 창 크기가 변경될 때 컨테이너 크기 조정
+     */
     resize() {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
@@ -117,6 +169,10 @@ export class JobLayoutManager {
     }
 }
 
+/**
+ * 공고 카드를 클릭했을 때, 서버에 조회수를 증가시키는 요청을 보냄
+ * {Event} event - 클릭 이벤트 객체
+ */
 export async function handleCardClick(event) {
     const card = event.currentTarget;
     const jobId = card.getAttribute("data-id");
@@ -142,7 +198,9 @@ export async function handleCardClick(event) {
     }
 }
 
-// 클릭 이벤트 등록 함수 수정
+/**
+ * 공고 카드 클릭 이벤트를 모든 카드에 추가
+ */
 export function attachClickEventsToCards() {
     console.log("attachClickEventsToCards 실행됨");
 

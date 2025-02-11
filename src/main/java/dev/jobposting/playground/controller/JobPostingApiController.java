@@ -21,6 +21,9 @@ public class JobPostingApiController {
 	private final JobPostingService jobPostingService;
 	private final JobPostingInfoService jobPostingInfoService;
 
+	// TODO: 정렬 문제
+	// TODO: 애니메이션 추가
+
 	@GetMapping
 	public ResponseEntity<List<JobCardResponse>> getTopViewedJobs() {
 		List<JobPostingResponse> jobPostingsResponses = jobPostingService.findTopViewedJobs();
