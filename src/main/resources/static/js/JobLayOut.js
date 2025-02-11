@@ -15,10 +15,11 @@ export class JobLayoutManager {
     }
 
     calculateJobCardPosition(posting, occupied, convertedTotalHeight, convertedTotalWidth) {
-        let convertedPostHeight = Math.ceil((posting.height - 1) / this.unitHeight);
-        let convertedPostWidth = Math.ceil((posting.width - 1) / this.unitWidth);
+        let convertedPostHeight = Math.ceil(posting.height / this.unitHeight);
+        let convertedPostWidth = Math.ceil(posting.width / this.unitWidth);
+
         for (let y = 0; y <= convertedTotalHeight - convertedPostHeight; y++) {
-            for (let x = 0; x <= convertedTotalWidth - convertedPostHeight; x++) {
+            for (let x = 0; x <= convertedTotalWidth - convertedPostWidth; x++) {
                 if (this.canPlaceJobCard(x, y, convertedPostWidth, convertedPostHeight, occupied)) {
                     this.markOccupied(x, y, convertedPostWidth, convertedPostHeight, occupied);
                     return { x, y };
@@ -55,21 +56,24 @@ export class JobLayoutManager {
 
         this.containerElement.innerHTML = '';  // 기존 요소 초기화
 
-        let convertedTotalHeight = Math.floor(this.height / this.unitHeight);
-        let convertedTotalWidth = Math.floor(this.width / this.unitWidth);
-        const occupiedSpaces = Array.from(Array(convertedTotalHeight), () => Array(convertedTotalWidth).fill(false));
+        let totalCards = postings.length;
+        let maxRows = Math.ceil(totalCards / 4); // 4열 배치 기준으로 행 수 계산
+        let cardHeight = 200; // 카드 기본 높이
+        let layoutHeight = maxRows * cardHeight + 20; // 추가 여백 포함하여 크기 계산
+
+        this.containerElement.style.height = `${layoutHeight}px`;
 
         postings.forEach(posting => {
             console.log(`[updateLayout] 공고 ID: ${posting.id}, Width: ${posting.width}, Height: ${posting.height}`);
 
-            const position = this.calculateJobCardPosition(posting, occupiedSpaces, convertedTotalHeight, convertedTotalWidth);
-            if (position) {
-                const jobCard = this.createCardElement(posting, position);
-                this.containerElement.appendChild(jobCard);
-            } else {
-                console.warn(`[updateLayout] 공고 ID ${posting.id} 위치 계산 실패`);
-            }
+            const jobCard = this.createCardElement(posting);
+            jobCard.style.width = `${posting.width}px`;
+            jobCard.style.height = `${posting.height}px`;
+
+            this.containerElement.appendChild(jobCard);
         });
+
+        attachClickEventsToCards();
     }
 
     createCardElement(posting, position) {
@@ -77,7 +81,6 @@ export class JobLayoutManager {
         jobCard.className = 'job-card';
         jobCard.setAttribute('data-id', posting.id);
 
-        // 조회수 초기값을 0으로 설정
         let savedViews = localStorage.getItem(`job-${posting.id}-views`);
         let initialViews = savedViews !== null ? parseInt(savedViews, 10) : 0;
 
@@ -85,10 +88,13 @@ export class JobLayoutManager {
         jobCard.setAttribute('data-width', posting.width);
         jobCard.setAttribute('data-height', posting.height);
 
+        let x = position?.x ?? 0;
+        let y = position?.y ?? 0;
+
         jobCard.style.width = `${posting.width}px`;
         jobCard.style.height = `${posting.height}px`;
-        jobCard.style.left = `${position.x * this.unitWidth}px`;
-        jobCard.style.top = `${position.y * this.unitHeight}px`;
+        jobCard.style.left = `${x * this.unitWidth}px`;
+        jobCard.style.top = `${y * this.unitHeight}px`;
 
         jobCard.innerHTML = `
         <div class="card-content">
@@ -96,11 +102,10 @@ export class JobLayoutManager {
                 <div class="job-title">${posting.title}</div>
             </div>
             <div class="job-description">${posting.description}</div>
-            <div class="view-count">조회수: ${initialViews}</div>  <!-- 초기값 0으로 설정 -->
+            <div class="view-count">조회수: ${initialViews}</div>
         </div>
     `;
 
-        // 클릭 시 조회수 증가 요청
         jobCard.addEventListener("click", handleCardClick);
         return jobCard;
     }
@@ -143,7 +148,6 @@ export function attachClickEventsToCards() {
 
     const cards = document.querySelectorAll('.job-card');
     cards.forEach(card => {
-        card.removeEventListener("click", handleCardClick); // 중복 등록 방지
         card.addEventListener("click", handleCardClick);
     });
 }

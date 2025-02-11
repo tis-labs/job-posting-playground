@@ -87,14 +87,19 @@ async function fetchAndUpdateJobPostings() {
 
 // 1분마다 공고 크기 업데이트 (즉시 적용 X, 일정 간격 유지)
 setInterval(async () => {
-    console.log("[⏳] 1분 후 조회수 및 크기 업데이트 실행됨");
+    console.log("1분 후 조회수 및 크기 업데이트 실행됨");
     await fetchAndUpdateJobPostings();
 }, 60000);
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("페이지 로드 완료");
 
-    // 초기 UI 세팅
+    const jobBoard = document.getElementById("jobBoard");
+
+    jobBoard.style.width = "1200px";
+    jobBoard.style.minHeight = "700px";
+    jobBoard.style.maxHeight = "90vh";
+
     setTimeout(fetchAndUpdateJobPostings, 500);  // 0.5초 후 UI 초기화
-    setInterval(fetchAndUpdateJobPostings, 60000); // 1분마다 조회수 갱신 60000
+    setInterval(fetchAndUpdateJobPostings, 60000); // 1분마다 조회수 갱신
 });
