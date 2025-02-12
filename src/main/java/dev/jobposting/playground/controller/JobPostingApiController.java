@@ -1,18 +1,14 @@
 package dev.jobposting.playground.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import dev.jobposting.playground.domain.PaperSize;
 import dev.jobposting.playground.service.JobPostingInfoService;
+import dev.jobposting.playground.service.JobPostingService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import dev.jobposting.playground.service.JobPostingService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +16,6 @@ import lombok.RequiredArgsConstructor;
 public class JobPostingApiController {
 	private final JobPostingService jobPostingService;
 	private final JobPostingInfoService jobPostingInfoService;
-
-	// TODO: 정렬 문제
-	// TODO: 애니메이션 추가
 
 	@GetMapping
 	public ResponseEntity<List<JobCardResponse>> getTopViewedJobs() {
@@ -38,10 +31,9 @@ public class JobPostingApiController {
 	}
 
 	@PostMapping("/{id}/view")
-	public ResponseEntity<Map<String, Integer>> increaseViewCount(@PathVariable("id") Long id) {
+	public ResponseEntity<ViewCountResponse> increaseViewCount(@PathVariable("id") Long id) {
 		int updatedCount = jobPostingInfoService.increaseViewCount(id);
-		Map<String, Integer> response = new HashMap<>();
-		response.put("totalViewCount", updatedCount);
+		ViewCountResponse response = new ViewCountResponse("조회수 증가", updatedCount);
 		return ResponseEntity.ok(response);
 	}
 }
