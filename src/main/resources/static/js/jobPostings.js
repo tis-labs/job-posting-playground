@@ -12,6 +12,10 @@ if (!window.jobLayoutManager.containerElement) {
     console.error("컨테이너 요소를 찾을 수 없습니다.");
 }
 
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 // 서버에서 채용 공고 데이터를 가져오는 함수
 function loadJobPostings() {
     fetch('/api/v1/jobs')
@@ -21,9 +25,6 @@ function loadJobPostings() {
             if (!cards || cards.length === 0) {
                 return;
             }
-
-            // 전역 변수에 현재 공고 리스트 저장
-            window.currentJobCards = cards;
 
             // 공고 레이아웃 업데이트
             jobLayoutManager.updateLayout(cards);
@@ -35,7 +36,7 @@ function loadJobPostings() {
 }
 
 // DOMContentLoaded 이벤트 리스너 (모바일이 아닌 환경에서만 실행)
-document.addEventListener('DOMContentLoaded', function() {
+window.onload = () => {
     if (!isMobile()) {
         // 제목 추가
         const container = document.getElementById('title-container');
@@ -49,14 +50,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // 채용 공고 데이터 불러오기
         loadJobPostings();
     }
-});
+};
 
 // 창 크기 변경 시 공고 레이아웃 업데이트
-window.addEventListener('resize', function () {
-    // 현재 화면 크기로 jobLayoutManager 크기 업데이트
+window.addEventListener("resize", async function () {
     jobLayoutManager.width = window.innerWidth;
     jobLayoutManager.height = window.innerHeight;
-    fetchAndUpdateJobPostings();
+
+    try {
+        await fetchAndUpdateJobPostings();
+    } catch (error) {
+        console.error("채용 공고 업데이트 중 오류 발생:", error);
+    }
 });
 
 // 서버에서 최신 공고 데이터를 가져와 UI를 업데이트하는 함수
@@ -73,7 +78,6 @@ async function fetchAndUpdateJobPostings() {
             const jobCard = document.querySelector(`.job-card[data-id="${cardData.id}"]`);
             if (jobCard) {
                 let updatedViews = cardData.totalViewCount; // 서버 조회수 데이터 반영
-
                 // HTML 요소에 조회수 업데이트
                 jobCard.setAttribute("data-views", updatedViews);
                 jobCard.querySelector(".view-count").textContent = `조회수: ${updatedViews}`;
@@ -91,14 +95,16 @@ setInterval(async () => {
 }, 60000);
 
 // 페이지 로드 후 기본 설정 및 첫 데이터 로딩
-document.addEventListener('DOMContentLoaded', () => {
-    const jobBoard = document.getElementById("jobBoard");
+window.onload = () => {
+    if (!isMobile()) {
+        const jobBoard = document.getElementById("jobBoard");
 
-    // 기본 크기 설정
-    jobBoard.style.width = "1200px";
-    jobBoard.style.minHeight = "700px";
-    jobBoard.style.maxHeight = "90vh";
+        // 기본 크기 설정
+        jobBoard.style.width = "1200px";
+        jobBoard.style.minHeight = "700px";
+        jobBoard.style.maxHeight = "90vh";
 
-    setTimeout(fetchAndUpdateJobPostings, 500);
-    setInterval(fetchAndUpdateJobPostings, 60000);
-});
+        loadJobPostings(); // 동기 로딩
+        setInterval(fetchAndUpdateJobPostings, 60000);
+    }
+};

@@ -8,4 +8,6 @@ import lombok.Getter;
 public class ViewCountResponse {
     private String message;
     private int totalViewCount;
+    private int width;
+    private int height;
 }

@@ -56,7 +56,7 @@ export class JobLayoutManager {
         if (!postings || postings.length === 0) {
             return;
         }
-
+        window.currentJobCards = postings;
         this.containerElement.innerHTML = '';
 
         const cards = [];  // 컬러 배열
@@ -98,17 +98,12 @@ export class JobLayoutManager {
         attachClickEventsToCards();
     }
 
-
     // 공고 카드 요소를 생성
     createCardElement(posting, position) {
         const jobCard = document.createElement('div');
         jobCard.className = 'job-card';
         jobCard.setAttribute('data-id', posting.id);
-
-        let savedViews = localStorage.getItem(`job-${posting.id}-views`);
-        let initialViews = savedViews !== null ? parseInt(savedViews, 10) : 0;
-
-        jobCard.setAttribute('data-views', initialViews);
+        jobCard.setAttribute('data-views', posting.totalViewCount);
         jobCard.setAttribute('data-width', posting.width);
         jobCard.setAttribute('data-height', posting.height);
 
@@ -126,7 +121,7 @@ export class JobLayoutManager {
                 <div class="job-title">${posting.title}</div>
             </div>
             <div class="job-description">${posting.description}</div>
-            <div class="view-count">조회수: ${initialViews}</div>
+            <div class="view-count">조회수: ${posting.totalViewCount}</div>
         </div>
     `;
 
@@ -153,7 +148,16 @@ export async function handleCardClick(event) {
         if (response.ok) {
             const updatedData = await response.json();
             let updatedViews = updatedData.totalViewCount;
-
+            let width = updatedData.width;
+            let height = updatedData.height;
+            let cards = window.currentJobCards;
+            let cardToUpdate = cards.find(card => card.id === parseInt(jobId));
+            if (cardToUpdate) {
+                cardToUpdate.height = height;
+                cardToUpdate.width = width;
+                cardToUpdate.totalViewCount = updatedViews;
+            }
+            jobLayoutManager.updateLayout(cards);
             card.setAttribute("data-views", updatedViews);
             card.querySelector(".view-count").textContent = `조회수: ${updatedViews}`;
         } else {
