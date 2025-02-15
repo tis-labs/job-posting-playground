@@ -1,6 +1,6 @@
 package dev.jobposting.playground.controller;
 
-import dev.jobposting.playground.ui2.PaperSize;
+import dev.jobposting.playground.domain.PaperSize;
 import lombok.Getter;
 
 @Getter
