@@ -1,4 +1,4 @@
-package dev.jobposting.playground.domain;
+package dev.jobposting.playground.geo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

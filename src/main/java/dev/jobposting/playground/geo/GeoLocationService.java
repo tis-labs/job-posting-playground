@@ -1,4 +1,4 @@
-package dev.jobposting.playground.service;
+package dev.jobposting.playground.geo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

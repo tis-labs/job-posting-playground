@@ -1,6 +1,4 @@
-package dev.jobposting.playground.mapper;
-
-import dev.jobposting.playground.domain.GeoLocation;
+package dev.jobposting.playground.geo;
 
 public class GeoLocationMapper {
 

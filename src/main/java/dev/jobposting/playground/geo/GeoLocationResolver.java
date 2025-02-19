@@ -1,4 +1,4 @@
-package dev.jobposting.playground.resolver;
+package dev.jobposting.playground.geo;
 
 import dev.jobposting.playground.domain.GeoLocation;
 import dev.jobposting.playground.service.GeoLocationService;
