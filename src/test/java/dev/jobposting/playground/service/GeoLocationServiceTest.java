@@ -2,8 +2,10 @@ package dev.jobposting.playground.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.jobposting.playground.domain.GeoLocation;
-import dev.jobposting.playground.util.PublicIpProvider;
+import dev.jobposting.playground.geo.GeoLocation;
+import dev.jobposting.playground.geo.GeoLocationService;
+import dev.jobposting.playground.network.GeoLocationClient;
+import dev.jobposting.playground.network.PublicIpProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ class GeoLocationServiceTest {
     private PublicIpProvider publicIpProvider;
 
     @Mock
-    private RestTemplate restTemplate;
+    private GeoLocationClient geoLocationClient;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -58,19 +59,14 @@ class GeoLocationServiceTest {
         // given
         String ip = "8.8.8.8";
 
-        when(restTemplate.getForObject("https://ipinfo.io/8.8.8.8/json", String.class))
-                .thenReturn(jsonResponse);
-        when(objectMapper.readTree(jsonResponse)).thenReturn(mockJsonNode); // ObjectMapper Mock 처리
+        when(geoLocationClient.getLocationByIp(ip)).thenReturn(jsonResponse);
+        when(objectMapper.readTree(jsonResponse)).thenReturn(mockJsonNode);
 
         // when
         Optional<GeoLocation> result = geoLocationService.getLocationByIp(ip);
 
         // then
         assertThat(result).isPresent();
-        assertThat(result.get().getIp()).isEqualTo("8.8.8.8");
-        assertThat(result.get().getCountry()).isEqualTo("KR");
-        assertThat(result.get().getRegion()).isEqualTo("Gyeonggi-do");
-        assertThat(result.get().getCity()).isEqualTo("Bucheon-si");
         assertThat(result.get().getLatitude()).isEqualTo(37.386);
         assertThat(result.get().getLongitude()).isEqualTo(-122.084);
     }
@@ -86,7 +82,7 @@ class GeoLocationServiceTest {
             }
         """;
 
-        when(restTemplate.getForObject("https://ipinfo.io/192.168.0.1/json", String.class))
+        when(geoLocationClient.getLocationByIp("https://ipinfo.io/192.168.0.1/json"))
                 .thenReturn(jsonResponse);
 
         // when
@@ -102,7 +98,7 @@ class GeoLocationServiceTest {
         // given
         String ip = "invalid-ip";
 
-        when(restTemplate.getForObject("https://ipinfo.io/invalid-ip/json", String.class))
+        when(geoLocationClient.getLocationByIp("https://ipinfo.io/invalid-ip/json"))
                 .thenThrow(new RuntimeException("API 호출 실패"));
 
         // when

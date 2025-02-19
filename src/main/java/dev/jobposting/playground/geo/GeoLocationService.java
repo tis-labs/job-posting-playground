@@ -7,7 +7,6 @@ import dev.jobposting.playground.util.PublicIpProvider;
 import dev.jobposting.playground.domain.GeoLocation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -15,18 +14,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GeoLocationService {
 
-    private static final String GEO_API_URL = "https://ipinfo.io/%s/json";
-
     private final PublicIpProvider publicIpProvider;
-    private final RestTemplate restTemplate;
+    private final GeoLocationClient geoLocationClient;
     private final ObjectMapper objectMapper;
 
     public Optional<GeoLocation> getLocationByIp(String ip) {
         String processedIp = normalizeIp(ip);
-        String url = String.format(GEO_API_URL, processedIp);
 
         try {
-            String response = restTemplate.getForObject(url, String.class);
+            String response = geoLocationClient.getLocationByIp(processedIp);
             JsonNode root = objectMapper.readTree(response);
 
             if (root.has("bogon") && root.get("bogon").asBoolean()) {
