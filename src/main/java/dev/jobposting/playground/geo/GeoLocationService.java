@@ -18,10 +18,8 @@ public class GeoLocationService {
     private final ObjectMapper objectMapper;
 
     public Optional<GeoLocation> getLocationByIp(String ip) {
-        String processedIp = normalizeIp(ip);
-
         try {
-            String response = geoLocationClient.getLocationByIp(processedIp);
+            String response = geoLocationClient.getLocationByIp(ip);
             JsonNode root = objectMapper.readTree(response);
 
             if (root.has("bogon") && root.get("bogon").asBoolean()) {
@@ -36,11 +34,6 @@ public class GeoLocationService {
 
     public String getPublicIp() {
         return publicIpProvider.getPublicIp();
-    }
-
-    private String normalizeIp(String ip) {
-        // IPv6 로컬 주소 (::1)을 IPv4로 변환
-        return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
     }
 
     private GeoLocation parseGeoLocation(JsonNode root) {
