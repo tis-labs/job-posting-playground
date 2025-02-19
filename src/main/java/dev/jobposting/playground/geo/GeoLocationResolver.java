@@ -31,7 +31,6 @@ public class GeoLocationResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String ip = getClientIp(request);
 
-        // IP가 127.0.0.1이면, 공인 IP를 가져오기
         if ("127.0.0.1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip)) {
             ip = geoLocationService.getPublicIp();
         }

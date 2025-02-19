@@ -21,7 +21,6 @@ public class GeoLocationService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-
     public Optional<GeoLocation> getLocationByIp(String ip) {
         String processedIp = normalizeIp(ip);
         String url = String.format(GEO_API_URL, processedIp);
@@ -30,7 +29,6 @@ public class GeoLocationService {
             String response = restTemplate.getForObject(url, String.class);
             JsonNode root = objectMapper.readTree(response);
 
-            // "bogon": true 이면 위치 정보 없다는 뜻.
             if (root.has("bogon") && root.get("bogon").asBoolean()) {
                 return Optional.empty();
             }
@@ -41,16 +39,10 @@ public class GeoLocationService {
         }
     }
 
-    /**
-     * 현재 서버의 공인 IP 조회
-     */
     public String getPublicIp() {
         return publicIpProvider.getPublicIp();
     }
 
-    /**
-     * IPv6 로컬 주소 (::1)을 IPv4로 변환
-     */
     private String normalizeIp(String ip) {
         // IPv6 로컬 주소 (::1)을 IPv4로 변환
         return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
@@ -72,9 +64,6 @@ public class GeoLocationService {
         return GeoLocationMapper.create(ip, country, city, region, timezone, latitude, longitude);
     }
 
-    /**
-     * JSON 응답에서 위도 & 경도 추출
-     */
     private double[] extractLatLong(JsonNode root) {
         double latitude = 0.0;
         double longitude = 0.0;
