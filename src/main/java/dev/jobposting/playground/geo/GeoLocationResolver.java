@@ -1,7 +1,5 @@
 package dev.jobposting.playground.geo;
 
-import dev.jobposting.playground.domain.GeoLocation;
-import dev.jobposting.playground.service.GeoLocationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;

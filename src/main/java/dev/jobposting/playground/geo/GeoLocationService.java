@@ -2,9 +2,8 @@ package dev.jobposting.playground.geo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.jobposting.playground.mapper.GeoLocationMapper;
-import dev.jobposting.playground.util.PublicIpProvider;
-import dev.jobposting.playground.domain.GeoLocation;
+import dev.jobposting.playground.network.GeoLocationClient;
+import dev.jobposting.playground.network.PublicIpProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,19 +44,11 @@ public class GeoLocationService {
     }
 
     private GeoLocation parseGeoLocation(JsonNode root) {
-        // IP, 국가, 도시 정보 추출
-        String ip = root.path("ip").asText("Unknown");
-        String country = root.path("country").asText("Unknown");
-        String city = root.path("city").asText("Unknown");
-        String region = root.path("region").asText("Unknown");
-        String timezone = root.path("timezone").asText("Unknown");
-
-        // 위도 & 경도 추출
         double[] latLong = extractLatLong(root);
         double latitude = latLong[0];
         double longitude = latLong[1];
 
-        return GeoLocationMapper.create(ip, country, city, region, timezone, latitude, longitude);
+        return GeoLocationMapper.create(latitude, longitude);
     }
 
     private double[] extractLatLong(JsonNode root) {

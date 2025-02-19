@@ -1,6 +1,6 @@
 package dev.jobposting.playground.config;
 
-import dev.jobposting.playground.resolver.GeoLocationResolver;
+import dev.jobposting.playground.geo.GeoLocationResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
