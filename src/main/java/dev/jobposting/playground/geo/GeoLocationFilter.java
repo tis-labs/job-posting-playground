@@ -22,14 +22,16 @@ public class GeoLocationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String ip = getClientIp(httpRequest);
-        Optional<GeoLocation> geoLocation = geoLocationService.getLocationByIp(ip);
 
-        if (geoLocation.isPresent()) {
-            GeoLocation location = geoLocation.get();
-            request.setAttribute("latitude", location.getLatitude());
-            request.setAttribute("longitude", location.getLongitude());
-        } else {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "위치를 찾을 수 없음");
+        try {
+            Optional<GeoLocation> geoLocation = geoLocationService.getLocationByIp(ip);
+            if (geoLocation.isPresent()) {
+                GeoLocation location = geoLocation.get();
+                httpRequest.setAttribute("latitude", location.getLatitude());
+                httpRequest.setAttribute("longitude", location.getLongitude());
+            }
+        } catch (Exception e) {
+            httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "서버 오류");
             return;
         }
 
@@ -37,15 +39,13 @@ public class GeoLocationFilter implements Filter {
     }
 
     private String getClientIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
+        String ip = request.getRemoteAddr();
 
-        if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-            ip = ip.split(",")[0].trim();
-        } else {
-            ip = request.getRemoteAddr();
+        if ("0:0:0:0:0:0:0:1".equals(ip) || "::1".equals(ip)) {
+            ip = "127.0.0.1";
         }
 
-        if ("127.0.0.1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip)) {
+        if ("127.0.0.1".equals(ip)) {
             ip = geoLocationService.getPublicIp();
         }
         return ip;
