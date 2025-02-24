@@ -1,5 +1,4 @@
-import { JobLayoutManager, handleCardClick, attachClickEventsToCards } from "./JobLayOut.js";
-
+import { JobLayoutManager, handleCardClick, attachClickEventsToCards, USER_ID_KEY } from "./JobLayOut.js";
 // JobLayoutManager 인스턴스 생성 (공고 레이아웃 관리)
 window.jobLayoutManager = new JobLayoutManager(
     document.querySelector('.job-layout'),
@@ -34,23 +33,6 @@ function loadJobPostings() {
         })
         .catch(error => console.error('채용공고 로딩 실패:', error));
 }
-
-// DOMContentLoaded 이벤트 리스너 (모바일이 아닌 환경에서만 실행)
-window.onload = () => {
-    if (!isMobile()) {
-        // 제목 추가
-        const container = document.getElementById('title-container');
-
-        // '채용공고' 제목 추가
-        const titleElement = document.createElement('h1');
-        titleElement.textContent = '채용공고';
-        titleElement.className = 'title';
-        container.appendChild(titleElement);
-
-        // 채용 공고 데이터 불러오기
-        loadJobPostings();
-    }
-};
 
 // 창 크기 변경 시 공고 레이아웃 업데이트
 window.addEventListener("resize", async function () {
@@ -94,8 +76,56 @@ setInterval(async () => {
     await fetchAndUpdateJobPostings();
 }, 60000);
 
+function issueUserId() {
+    return fetch('/api/users/id', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            localStorage.setItem(USER_ID_KEY, data.userId);
+            return data.userId;
+        })
+        .catch(error => {
+            console.error('사용자 ID 발급 실패:', error);
+            throw error;
+        });
+}
+
+async function sendOpenEvent(userId) {
+    try {
+        const response = await fetch(`/api/events/users/${userId}/postings/open`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('열람 이벤트 전송 실패:', error);
+        throw error;
+    }
+}
+
 // 페이지 로드 후 기본 설정 및 첫 데이터 로딩
 window.onload = () => {
+    issueUserId().then(id => {
+        sendOpenEvent(id).then( json => {
+            }
+        );
+    });
     if (!isMobile()) {
         const jobBoard = document.getElementById("jobBoard");
 
