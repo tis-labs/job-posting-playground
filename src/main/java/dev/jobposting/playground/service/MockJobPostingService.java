@@ -1,6 +1,9 @@
 package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.controller.JobPostingResponse;
+import dev.jobposting.playground.event.service.JobEventPostingInfoService;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -9,13 +12,10 @@ import java.util.stream.Collectors;
 
 @Primary
 @Service
+@RequiredArgsConstructor
 public class MockJobPostingService implements JobPostingService {
 
 	private final JobPostingInfoService jobPostingInfoService;
-
-	public MockJobPostingService(JobPostingInfoService jobPostingInfoService) {
-		this.jobPostingInfoService = jobPostingInfoService;
-	}
 
 	@Override
 	public List<JobPostingResponse> findTopViewedJobs() {
