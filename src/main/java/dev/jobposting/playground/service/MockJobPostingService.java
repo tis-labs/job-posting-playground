@@ -1,11 +1,11 @@
 package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.controller.JobPostingResponse;
+import dev.jobposting.playground.domain.JobPosting;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Primary
 @Service
@@ -19,7 +19,9 @@ public class MockJobPostingService implements JobPostingService {
 
 	@Override
 	public List<JobPostingResponse> findTopViewedJobs() {
-		return jobPostingInfoService.getAllJobPostings().stream()
+		List<JobPosting> jobPostings = jobPostingInfoService.getAllJobPostings();
+
+		return jobPostings.stream()
 				.map(job -> new JobPostingResponse(
 						job.getId(),
 						job.getFiveMinViewCount(),
