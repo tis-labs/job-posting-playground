@@ -27,45 +27,10 @@ public class JobPostingInfoService {
     }
 
     public List<JobPosting> getAllJobPostings() {
-        List<String> sortedJobIds = getSortedJobIds();
-        return createSortedJobPostings(sortedJobIds);
-    }
-
-    /**
-     * 클릭 데이터를 기반으로 정렬된 jobId 리스트 반환
-     */
-    private List<String> getSortedJobIds() {
-        List<String> sortedJobIds = currentViewStorage.getTopCurrentViewedJobs();
-
-        return clickCounts.keySet().stream()
-                .sorted((id1, id2) -> compareJobIds(id1, id2, sortedJobIds))
-                .map(String::valueOf)
+        return clickCounts.entrySet().stream()
+                .sorted(Comparator.comparingInt((Map.Entry<Long, Integer> e) -> e.getValue()).reversed())
+                .map(e -> createJobPosting(e.getKey(), currentViewStorage.getClickCount(String.valueOf(e.getKey()))))
                 .toList();
-    }
-
-    private int compareJobIds(Long id1, Long id2, List<String> sortedJobIds) {
-        // 클릭 횟수가 많은 순서로 정렬
-        int clickCount1 = clickCounts.getOrDefault(id1, 0);
-        int clickCount2 = clickCounts.getOrDefault(id2, 0);
-        if (clickCount1 != clickCount2) {
-            return Integer.compare(clickCount2, clickCount1);
-        }
-
-        // 클릭 횟수가 같다면, FIFO 순서 유지
-        int index1 = sortedJobIds.indexOf(String.valueOf(id1));
-        int index2 = sortedJobIds.indexOf(String.valueOf(id2));
-
-        // 리스트에 없는 경우 가장 뒤로 정렬
-        if (index1 == -1) index1 = Integer.MAX_VALUE;
-        if (index2 == -1) index2 = Integer.MAX_VALUE;
-
-        return Integer.compare(index1, index2);
-    }
-
-    private List<JobPosting> createSortedJobPostings(List<String> sortedJobIds) {
-        return sortedJobIds.stream()
-                .map(jobId -> createJobPosting(Long.parseLong(jobId), currentViewStorage.getClickCount(jobId)))
-                .collect(Collectors.toList());
     }
 
     private JobPosting createJobPosting(Long jobId, int clickCount) {
