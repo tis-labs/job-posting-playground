@@ -13,12 +13,7 @@ public class CurrentViewStorage {
     private static final int MAX_SIZE = 5; // 최대 저장 개수
     private final Deque<String> currentToPacket = new ArrayDeque<>();
 
-    public void increase(String jobId) {
-        addClick(jobId);
-        removeOldestIfExceedsLimit();
-    }
-
-    private void addClick(String jobId) {
+    public synchronized void increase(String jobId) {
         currentToPacket.addLast(jobId);
     }
 
