@@ -34,7 +34,7 @@ public class JobPostingInfoService {
     }
 
     private JobPosting createJobPosting(Long jobId, int clickCount) {
-        PaperSize paperSize = calculateSize(clickCount);
+        PaperSize paperSize = PaperSize.getSizeByViews(clickCount);
         return JobPosting.builder()
                 .id(jobId)
                 .fiveMinViewCount(clickCount)
@@ -45,20 +45,12 @@ public class JobPostingInfoService {
     }
 
     public int increaseViewCount(Long jobId) {
-        incrementClickCount(jobId);
-        updateRecentClicks(jobId);
-        return clickCounts.get(jobId);
-    }
-
-    private void incrementClickCount(Long jobId) {
-        clickCounts.put(jobId, clickCounts.getOrDefault(jobId, 0) + 1);
-    }
-
-    private void updateRecentClicks(Long jobId) {
+        if (clickCounts.containsKey(jobId)) {
+            clickCounts.put(jobId, clickCounts.get(jobId) + 1);  // 기존 값에 +1
+        } else {
+            clickCounts.put(jobId, 1);  // 처음 추가하는 값이면 1로 설정
+        }
         currentViewStorage.increase(String.valueOf(jobId));
-    }
-
-    private PaperSize calculateSize(int clickCount) {
-        return PaperSize.getSizeByViews(clickCount);
+        return clickCounts.get(jobId);
     }
 }

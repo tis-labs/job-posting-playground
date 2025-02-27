@@ -15,9 +15,6 @@ public class CurrentViewStorage {
 
     public synchronized void increase(String jobId) {
         currentToPacket.addLast(jobId);
-    }
-
-    private void removeOldestIfExceedsLimit() {
         if (currentToPacket.size() > MAX_SIZE) {
             currentToPacket.pollFirst();
         }
