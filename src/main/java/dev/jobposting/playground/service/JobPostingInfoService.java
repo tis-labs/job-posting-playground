@@ -6,16 +6,16 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class JobPostingInfoService {
 
-    private static final Map<Long, Integer> clickCounts = new HashMap<>();
+    private static final Map<Long, Integer> clickCounts = new ConcurrentHashMap<>();
     private final CurrentViewStorage currentViewStorage;
 
     @PostConstruct
