@@ -34,7 +34,6 @@ public class JobPostingApiController {
     public ResponseEntity<List<JobCardResponse>> increaseViewCount(@PathVariable("id") Long id) {
         jobPostingInfoService.increaseViewCount(id);
 
-        // 최신 정렬된 공고 리스트 가져오기
         List<JobPostingResponse> sortedJobPostings = jobPostingService.findTopViewedJobs();
         List<JobCardResponse> jobCardsResponse = sortedJobPostings.stream()
                 .map(job -> JobCardResponse.from(job, PaperSize.getSizeByViews(job.getTotalViewCount())))

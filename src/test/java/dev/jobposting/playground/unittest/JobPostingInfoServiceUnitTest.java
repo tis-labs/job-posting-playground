@@ -19,20 +19,20 @@ class JobPostingInfoServiceUnitTest {
     @BeforeEach
     void setUp() {
         service = new JobPostingInfoService(new CurrentViewStorage());
-        service.resetClickCount(); // 클릭 수 초기화
+        service.resetClickCount();
     }
 
     @Test
     void 단일_스레드에서_클릭수_증가_테스트() {
-        // Given (테스트를 위한 서비스 인스턴스 생성)
+        // Given
         JobPostingInfoService service = new JobPostingInfoService(new CurrentViewStorage());
 
-        // When (같은 jobId에 대해 여러 번 클릭 증가)
+        // When
         int firstClick = service.increaseViewCount(1L);
         int doubleClick = service.increaseViewCount(1L);
         int thirdClick = service.increaseViewCount(1L);
 
-        // Then (클릭 수가 정상적으로 증가하는지 확인)
+        // Then
         assertEquals(1, firstClick);
         assertEquals(2, doubleClick);
         assertEquals(3, thirdClick);
@@ -63,7 +63,7 @@ class JobPostingInfoServiceUnitTest {
 
     @Test
     void 공고_조회시_클릭수_기준으로_정렬되는지_확인() {
-        // Given: 여러 공고에 대해 클릭 수 추가
+        // Given
         service.increaseViewCount(3L);
         service.increaseViewCount(3L);
         service.increaseViewCount(2L);
@@ -71,15 +71,15 @@ class JobPostingInfoServiceUnitTest {
         service.increaseViewCount(2L);
         service.increaseViewCount(1L);
 
-        // When: 정렬된 공고 리스트 조회
+        // When
         List<JobPosting> sortedJobPostings = service.getAllJobPostings();
 
-        // Then: 정렬된 ID 리스트를 예상 값과 비교
+        // Then
         List<Long> actualSortedIds = sortedJobPostings.stream()
                 .map(JobPosting::getId)
                 .toList();
 
-        List<Long> expectedSortedIds = List.of(2L, 3L, 1L); // 예상 정렬 결과
+        List<Long> expectedSortedIds = List.of(2L, 3L, 1L);
         assertEquals(expectedSortedIds, actualSortedIds);
     }
 }

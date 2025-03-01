@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CurrentViewStorage {
 
-    private static final int MAX_SIZE = 5; // 최대 저장 개수
+    private static final int MAX_SIZE = 5;
     private final Deque<String> currentToPacket = new ArrayDeque<>();
 
     public synchronized void increase(String jobId) {
