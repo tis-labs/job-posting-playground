@@ -44,16 +44,19 @@ public class JobPostingInfoService {
                 .build();
     }
 
+    /**
+     * jobId의 클릭 수를 증가시키고, 최근 클릭 목록에도 반영하는 역할
+     */
     public int increaseViewCount(Long jobId) {
         int updatedCount = clickCounts.compute(jobId, (key, value) -> {
             if (value == null) {
-                return 1;  // 처음 추가하는 값이면 1로 설정
+                return 1;
             }
-            return value + 1;  // 기존 값이 있으면 +1 증가
+            return value + 1;
         });
 
         currentViewStorage.increase(String.valueOf(jobId));
-        return updatedCount; // 반환값 활용 가능하도록 변경
+        return updatedCount;
     }
 
     public void resetClickCount() {
