@@ -1,8 +1,7 @@
 package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.controller.JobPostingResponse;
-import lombok.RequiredArgsConstructor;
-
+import dev.jobposting.playground.domain.JobPosting;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +9,19 @@ import java.util.List;
 
 @Primary
 @Service
-@RequiredArgsConstructor
 public class MockJobPostingService implements JobPostingService {
 
 	private final JobPostingInfoService jobPostingInfoService;
 
+	public MockJobPostingService(JobPostingInfoService jobPostingInfoService) {
+		this.jobPostingInfoService = jobPostingInfoService;
+	}
+
 	@Override
 	public List<JobPostingResponse> findTopViewedJobs() {
-		return jobPostingInfoService.getAllJobPostings().stream()
+		List<JobPosting> jobPostings = jobPostingInfoService.getAllJobPostings();
+
+		return jobPostings.stream()
 				.map(job -> new JobPostingResponse(
 						job.getId(),
 						job.getFiveMinViewCount(),

@@ -158,12 +158,16 @@ export async function handleCardClick(event) {
 
         if (response.ok) {
             const updatedData = await response.json();
-            let updatedViews = updatedData.totalViewCount;
-            let width = updatedData.width;
-            let height = updatedData.height;
+
+            // 기존 채용 공고 리스트를 최신 정렬된 데이터로 교체
+            window.currentJobCards = updatedData;
+
             let cards = window.currentJobCards;
             let cardToUpdate = cards.find(card => card.id === parseInt(jobId));
             if (cardToUpdate) {
+                let updatedViews = cardToUpdate.totalViewCount;
+                let width = cardToUpdate.width;
+                let height = cardToUpdate.height;
                 cardToUpdate.height = height;
                 cardToUpdate.width = width;
                 cardToUpdate.totalViewCount = updatedViews;

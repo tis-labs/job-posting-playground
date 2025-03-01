@@ -2,53 +2,61 @@ package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.domain.JobPosting;
 import dev.jobposting.playground.domain.PaperSize;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class JobPostingInfoService {
 
-    private static final Map<Long, Integer> clickCounts = new HashMap<>();
+    private static final Map<Long, Integer> clickCounts = new ConcurrentHashMap<>();
+    private final CurrentViewStorage currentViewStorage;
 
-    /**
-     * 데이터 생성 (초기 조회수 0)
-     */
-    static {
+    @PostConstruct
+    public void init() {
         for (long i = 1; i <= 6; i++) {
             clickCounts.put(i, 0);
+            currentViewStorage.increase(String.valueOf(i));
         }
     }
 
     public List<JobPosting> getAllJobPostings() {
         return clickCounts.entrySet().stream()
-                .map(entry -> createJobPosting(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparingInt((Map.Entry<Long, Integer> e) -> e.getValue()).reversed())
+                .map(e -> createJobPosting(e.getKey(), currentViewStorage.getClickCount(String.valueOf(e.getKey()))))
+                .toList();
     }
 
     private JobPosting createJobPosting(Long jobId, int clickCount) {
-        PaperSize paperSize = calculateSize(clickCount);
+        PaperSize paperSize = PaperSize.getSizeByViews(clickCount);
         return JobPosting.builder()
                 .id(jobId)
                 .fiveMinViewCount(clickCount)
-                .totalViewCount(clickCount)
+                .totalViewCount(clickCounts.getOrDefault(jobId, 0))
                 .width(paperSize.getWidth())
                 .height(paperSize.getHeight())
                 .build();
     }
 
-    private PaperSize calculateSize(int clickCount) {
-        return PaperSize.getSizeByViews(clickCount);
+    public int increaseViewCount(Long jobId) {
+        int updatedCount = clickCounts.compute(jobId, (key, value) -> {
+            if (value == null) {
+                return 1;
+            }
+            return value + 1;
+        });
+
+        currentViewStorage.increase(String.valueOf(jobId));
+        return updatedCount;
     }
 
-    public int increaseViewCount(Long jobId) {
-        int updatedCount = clickCounts.getOrDefault(jobId, 0) + 1;
-        clickCounts.put(jobId, updatedCount);
-        return updatedCount;
+    public void resetClickCount() {
+        clickCounts.clear();
     }
 }

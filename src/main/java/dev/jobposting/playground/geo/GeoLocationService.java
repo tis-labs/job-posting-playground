@@ -48,7 +48,7 @@ public class GeoLocationService {
         double latitude = 0.0;
         double longitude = 0.0;
 
-        String loc = root.path("loc").asText(); // "37.386,-122.084"
+        String loc = root.path("loc").asText();
         if (loc.contains(",")) {
             String[] latLong = loc.split(",");
             try {
