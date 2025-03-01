@@ -1,14 +1,12 @@
 package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.controller.JobPostingResponse;
-import dev.jobposting.playground.event.service.JobEventPostingInfoService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Primary
 @Service
