@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public enum PaperSize {
     DEFAULT(74, 105),
-    A2(420, 594),
     A3(420, 297),
     A4( 210, 297),
     A5( 210, 148),
@@ -20,7 +19,6 @@ public enum PaperSize {
     }
 
     public static PaperSize getSizeByViews(int totalViewCount) {
-        if (totalViewCount >= 5) return A2;
         if (totalViewCount >= 4) return A3;
         if (totalViewCount >= 3) return A4;
         if (totalViewCount >= 2) return A5;
