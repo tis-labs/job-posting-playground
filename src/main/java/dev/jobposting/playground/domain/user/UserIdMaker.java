@@ -2,7 +2,6 @@ package dev.jobposting.playground.domain.user;
 
 import org.springframework.stereotype.Component;
 
-import com.github.f4b6a3.tsid.TsidCreator;
 import com.github.f4b6a3.tsid.TsidFactory;
 
 import lombok.RequiredArgsConstructor;
