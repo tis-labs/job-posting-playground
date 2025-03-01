@@ -55,4 +55,8 @@ public class JobPostingInfoService {
         currentViewStorage.increase(String.valueOf(jobId));
         return updatedCount; // 반환값 활용 가능하도록 변경
     }
+
+    public void resetClickCount() {
+        clickCounts.clear();
+    }
 }

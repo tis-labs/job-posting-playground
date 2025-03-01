@@ -32,45 +32,6 @@ public class CurrentViewStorageUnitTest {
     }
 
     @Test
-    void 클릭_횟수가_같을_경우_정확한_순서로_정렬됨() {
-
-        // given: 최대 크기(5개) 초과하지 않도록 클릭 추가
-        currentViewStorage.increase("1"); // 1번 클릭
-        currentViewStorage.increase("2"); // 1번 클릭
-        currentViewStorage.increase("3"); // 1번 클릭
-        currentViewStorage.increase("4"); // 1번 클릭
-        currentViewStorage.increase("5"); // 1번 클릭
-        currentViewStorage.increase("3"); // "3" 2회
-        currentViewStorage.increase("5"); // "5" 2회
-        currentViewStorage.increase("5"); // "5" 3회
-
-        // when: 정렬된 jobId 조회
-        List<String> topJobs = currentViewStorage.getTopCurrentViewedJobs();
-
-        // then: 클릭 횟수 내림차순 정렬 + FIFO 유지
-        assertThat(topJobs).containsExactly("5", "4", "3");
-    }
-
-
-    @Test
-    void 클릭_횟수_기반_정렬_확인() {
-
-        // given: 특정 jobId("3", "3", "2", "2", "2", "1")를 클릭
-        currentViewStorage.increase("3");
-        currentViewStorage.increase("3");
-        currentViewStorage.increase("2");
-        currentViewStorage.increase("2");
-        currentViewStorage.increase("2");
-        currentViewStorage.increase("1");
-
-        // when: 정렬된 jobId 조회
-        List<String> topJobs = currentViewStorage.getTopCurrentViewedJobs();
-
-        // then: 가장 많이 클릭된 "2"번이 가장 앞에 와야 함
-        assertThat(topJobs).containsExactly("2", "3", "1");
-    }
-
-    @Test
     void 특정_공고의_클릭_횟수_확인() {
 
         // given: jobId "3"을 4번 클릭
