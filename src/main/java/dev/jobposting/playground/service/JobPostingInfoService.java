@@ -45,12 +45,14 @@ public class JobPostingInfoService {
     }
 
     public int increaseViewCount(Long jobId) {
-        if (clickCounts.containsKey(jobId)) {
-            clickCounts.put(jobId, clickCounts.get(jobId) + 1);  // 기존 값에 +1
-        } else {
-            clickCounts.put(jobId, 1);  // 처음 추가하는 값이면 1로 설정
-        }
+        int updatedCount = clickCounts.compute(jobId, (key, value) -> {
+            if (value == null) {
+                return 1;  // 처음 추가하는 값이면 1로 설정
+            }
+            return value + 1;  // 기존 값이 있으면 +1 증가
+        });
+
         currentViewStorage.increase(String.valueOf(jobId));
-        return clickCounts.get(jobId);
+        return updatedCount; // 반환값 활용 가능하도록 변경
     }
 }
