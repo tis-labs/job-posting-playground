@@ -141,9 +141,20 @@ export class JobLayoutManager {
 export async function handleCardClick(event) {
     const card = event.currentTarget;
     const jobId = card.getAttribute("data-id");
+    const viewCount = card.getAttribute("data-views");
 
     try {
-        const response = await fetch(`/api/v1/jobs/${jobId}/view`, { method: "POST" });
+        const userId = localStorage.getItem(USER_ID_KEY);
+        const response = await fetch(`/api/v1/jobs/${jobId}/view`,
+            { method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: userId,
+                    viewCount: viewCount
+                })
+            });
 
         if (response.ok) {
             const updatedData = await response.json();
@@ -184,3 +195,5 @@ export function applyRandomColors(cards) {
         card.style.backgroundColor = randomColor;
     });
 }
+
+export const USER_ID_KEY = 'JOB_BOARD_USER_ID';
