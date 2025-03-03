@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import dev.jobposting.playground.event.event.UserClickEvent;
 import dev.jobposting.playground.event.query.TotalViewCountQuery;
 import dev.jobposting.playground.event.query.ViewCountMap;
-import dev.jobposting.playground.service.JobPostingInfoService;
 import dev.jobposting.playground.service.TotalViewStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

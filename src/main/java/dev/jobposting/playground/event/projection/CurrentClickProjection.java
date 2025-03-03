@@ -1,7 +1,6 @@
 package dev.jobposting.playground.event.projection;
 
 import org.axonframework.eventhandling.EventHandler;
-import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Repository;
 
