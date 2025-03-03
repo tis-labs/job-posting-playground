@@ -2,7 +2,6 @@ package dev.jobposting.playground.service;
 
 import dev.jobposting.playground.domain.JobPosting;
 import dev.jobposting.playground.domain.PaperSize;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

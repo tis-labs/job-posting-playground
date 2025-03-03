@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.jobposting.playground.domain.user.UserIdMaker;
+import dev.jobposting.playground.event.service.JobEventPostingInfoService;
 import dev.jobposting.playground.user.config.UserLocation;
 import dev.jobposting.playground.user.dto.UserIdResponseDto;
 import dev.jobposting.playground.user.dto.UserLocationDto;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserApiController {
 	private final UserIdMaker userIdMaker;
+	private final JobEventPostingInfoService jobEventPostingInfoService;
 
 	@PostMapping("users/id")
 	public UserIdResponseDto issueUserId() {
@@ -29,6 +31,7 @@ public class UserApiController {
 	public UserIdResponseDto open(@PathVariable String id
 		,  @UserLocation UserLocationDto userLocationDto
 	) {
+		jobEventPostingInfoService.openPosting(id);
 		return new UserIdResponseDto(id);
 	}
 }
