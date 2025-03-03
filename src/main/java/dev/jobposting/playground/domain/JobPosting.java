@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class JobPosting {
-    private Long id;
+    private String id;
     private int totalViewCount;
-    private int fiveMinViewCount;
+    private int currentViewCount;
     private int width;
     private int height;
 }

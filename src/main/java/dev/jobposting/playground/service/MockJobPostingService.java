@@ -24,7 +24,7 @@ public class MockJobPostingService implements JobPostingService {
 		return jobPostings.stream()
 				.map(job -> new JobPostingResponse(
 						job.getId(),
-						job.getFiveMinViewCount(),
+						job.getCurrentViewCount(),
 						job.getTotalViewCount(),
 						"샘플 공고 " + job.getId(),
 						"샘플 설명",

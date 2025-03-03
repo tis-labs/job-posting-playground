@@ -4,16 +4,15 @@ import lombok.Getter;
 
 @Getter
 public class JobPostingResponse {
-	private final Long id;
+	private final String id;
 	private final int fiveMinViewCount;
 	private final int totalViewCount;
-
 	private final String title;
 	private final String description;
 	private final String company;
 	private final String url;
 
-	public JobPostingResponse(Long id, int fiveMinViewCount, int totalViewCount,
+	public JobPostingResponse(String id, int fiveMinViewCount, int totalViewCount,
 							  String title, String description, String company, String url) {
 		this.id = id;
 		this.fiveMinViewCount = fiveMinViewCount;
