@@ -3,6 +3,8 @@ package dev.jobposting.playground.unittest;
 import dev.jobposting.playground.domain.JobPosting;
 import dev.jobposting.playground.service.CurrentViewStorage;
 import dev.jobposting.playground.service.JobPostingInfoService;
+import dev.jobposting.playground.service.TotalViewStorage;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,14 +20,14 @@ class JobPostingInfoServiceUnitTest {
 
     @BeforeEach
     void setUp() {
-        service = new JobPostingInfoService(new CurrentViewStorage());
+        service = new JobPostingInfoService(new CurrentViewStorage(), new TotalViewStorage());
         service.resetClickCount();
     }
 
     @Test
     void 단일_스레드에서_클릭수_증가_테스트() {
         // Given
-        JobPostingInfoService service = new JobPostingInfoService(new CurrentViewStorage());
+        JobPostingInfoService service = new JobPostingInfoService(new CurrentViewStorage(), new TotalViewStorage());
 
         // When
         int firstClick = service.increaseViewCount(1L);
@@ -41,7 +43,7 @@ class JobPostingInfoServiceUnitTest {
     @Test
     void testIncreaseViewCountMultiThread() throws InterruptedException {
         // Given
-        JobPostingInfoService service = new JobPostingInfoService(new CurrentViewStorage());
+        JobPostingInfoService service = new JobPostingInfoService(new CurrentViewStorage(), new TotalViewStorage());
         int threadCount = 6;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -75,11 +77,11 @@ class JobPostingInfoServiceUnitTest {
         List<JobPosting> sortedJobPostings = service.getAllJobPostings();
 
         // Then
-        List<Long> actualSortedIds = sortedJobPostings.stream()
+        List<String> actualSortedIds = sortedJobPostings.stream()
                 .map(JobPosting::getId)
                 .toList();
 
-        List<Long> expectedSortedIds = List.of(2L, 3L, 1L);
+        List<String> expectedSortedIds = List.of("2", "3", "1");
         assertEquals(expectedSortedIds, actualSortedIds);
     }
 }

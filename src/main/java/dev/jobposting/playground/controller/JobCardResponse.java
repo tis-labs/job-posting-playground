@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class JobCardResponse {
-	private final Long id;
+	private final String id;
 	private final int fiveMinViewCount;
 	private final int totalViewCount;
 	private final String title;
@@ -15,7 +15,7 @@ public class JobCardResponse {
 	private final int width;
 	private final int height;
 
-	private JobCardResponse(Long id, int fiveMinViewCount, int totalViewCount, String title, String description,
+	private JobCardResponse(String id, int fiveMinViewCount, int totalViewCount, String title, String description,
 		String company, String url, int width, int height) {
 		this.id = id;
 		this.fiveMinViewCount = fiveMinViewCount;
